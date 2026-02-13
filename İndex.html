@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sana Özel Romantik Sürpriz</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Great+Vibes&family=Poppins:wght@300&display=swap');
+
+        :root {
+            --envelope-color: #ff4d6d; /* Romantik gül pembesi */
+            --envelope-dark: #c9184a;  /* Derin bordo/pembe tonu */
+            --paper-color: #fffaf0;    /* Premium fildişi kağıt */
+            --gold: #ffb703;           /* Altın ışıltısı */
+            --bg-gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        }
+
+        body {
+            background: var(--bg-gradient);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            overflow: hidden;
+            perspective: 1500px;
+        }
+
+        /* Arka Plan Işıltıları (Yıldızlar) */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.5;
+            animation: twinkle var(--duration) infinite ease-in-out;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            cursor: pointer;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            width: 90%;
+            max-width: 350px;
+            display: flex;
+            justify-content: center;
+        }
+        
+        .container:hover {
+            transform: scale(1.05) rotate(1deg);
+        }
+
+        /* --- ZARF TASARIMI --- */
+        .envelope {
+            width: 100%;
+            height: 230px;
+            background: var(--envelope-color);
+            position: relative;
+            border-radius: 10px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+
+        /* Üst Kapak */
+        .flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--envelope-color);
+            clip-path: polygon(0 0, 100% 0, 50% 60%);
+            transform-origin: top;
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1), z-index 0.2s linear 0.4s;
+            z-index: 5;
+            border-bottom: 2px solid rgba(0,0,0,0.1);
+        }
+
+        /* Zarfın Ön Kısmı */
+        .pocket {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--envelope-color);
+            clip-path: polygon(0 40%, 50% 65%, 100% 40%, 100% 100%, 0 100%);
+            z-index: 4;
+            background: linear-gradient(150deg, var(--envelope-color) 40%, var(--envelope-dark) 100%);
+            border-radius: 0 0 10px 10px;
+        }
+
+        /* Zarfın İç Duvarı */
+        .envelope::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--envelope-dark);
+            border-radius: 10px;
+            z-index: 0;
+        }
+
+        /* --- MEKTUP KAĞIDI --- */
+        .letter {
+            position: absolute;
+            width: 90%;
+            height: 160%; /* Orantılı yükseklik */
+            background: var(--paper-color);
+            top: 5%;
+            left: 5%;
+            border-radius: 4px;
+            padding: 25px 15px;
+            box-sizing: border-box;
+            z-index: 2;
+            transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateY(0) scale(0.85);
+            opacity: 0;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.3);
+            background-image: radial-gradient(#f0e6d2 1px, transparent 1px);
+            background-size: 20px 20px;
+            overflow-y: auto;
+            scrollbar-width: none;
+        }
+
+        .letter::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Mektup İçeriği */
+        .letter-inner {
+            border: 1px double rgba(212, 175, 55, 0.5);
+            min-height: 100%;
+            padding: 15px 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .letter h2 {
+            font-family: 'Great Vibes', cursive;
+            font-size: 1.8rem;
+            margin: 0 0 10px 0;
+            color: var(--envelope-dark);
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.1);
+        }
+
+        .letter p {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.1rem;
+            color: #333;
+            line-height: 1.4;
+            margin: 6px 0;
+            text-align: center;
+        }
+
+        .letter .signature {
+            margin-top: 20px;
+            align-self: flex-end;
+            font-family: 'Great Vibes', cursive;
+            font-size: 1.5rem;
+            color: var(--envelope-dark);
+        }
+
+        /* --- ANİMASYONLAR --- */
+        .container.open .flap {
+            transform: rotateX(180deg);
+            z-index: 1;
+        }
+
+        .container.open .letter {
+            opacity: 1;
+            /* Mobil için yukarı çıkış miktarını ayarladık */
+            transform: translateY(-280px) scale(1.05); 
+            z-index: 10;
+        }
+
+        /* Mühür Kalp */
+        .seal {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 50px;
+            height: 50px;
+            background: var(--gold);
+            border-radius: 50%;
+            transform: translate(-50%, -25%);
+            z-index: 6;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.5s ease;
+        }
+
+        .seal::after {
+            content: '❤';
+            color: white;
+            font-size: 24px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .container.open .seal {
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(2);
+            pointer-events: none;
+        }
+
+        /* Talimat ve Efektler */
+        .instruction {
+            color: white;
+            margin-top: 60px;
+            font-weight: 300;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            opacity: 0.6;
+            position: absolute;
+            bottom: -50px;
+            width: 100%;
+            text-align: center;
+        }
+
+        /* Kalp Yağmuru (Açıldığında) */
+        .heart-particle {
+            position: absolute;
+            color: #ff4d6d;
+            font-size: 20px;
+            pointer-events: none;
+            z-index: 100;
+            animation: fall linear forwards;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Mobil Ekran Düzenlemeleri */
+        @media screen and (max-height: 700px) {
+            .container.open .letter {
+                transform: translateY(-240px) scale(1);
+            }
+            .letter {
+                height: 150%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="stars" id="starsContainer"></div>
+
+    <div class="container" id="mainContainer" onclick="toggleLetter()">
+        <div class="envelope">
+            <div class="flap"></div>
+            <div class="pocket"></div>
+            <div class="seal"></div>
+            
+            <div class="letter">
+                <div class="letter-inner">
+                    <h2>Bir Tanem,</h2>
+                    <p>Bu gece sana ulaşmasını istediğim küçük bir sürpriz vardı…</p>
+                    <p>Her şeyi 14 Şubat’a göre planlamıştım.</p>
+                    <p>Ama ufak bir aksaklık yüzünden kargo birkaç gün gecikecek.</p>
+                    <p>İnan bana, tam zamanında eline geçmesini çok istemiştim.</p>
+                    <p>Olmadı… Ama bil ki içindeki düşünce ve heyecan hâlâ aynı.</p>
+                    <p>Hediyen birkaç gün içinde sana ulaşacak.</p>
+                    <p>O zamana kadar bu küçük bir sır, tatlı bir sürpriz olarak saklı kalsın.</p>
+                    <p>Değecek. ❤️</p>
+                    <div class="signature">Seni Çok Seviyorum...</div>
+                </div>
+            </div>
+        </div>
+        <div class="instruction">Dokun ve Sürprizi Gör Sevgilim</div>
+    </div>
+
+    <script>
+        // Yıldızları oluştur
+        const starsContainer = document.getElementById('starsContainer');
+        for (let i = 0; i < 80; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            const size = Math.random() * 2.5 + 'px';
+            star.style.width = size;
+            star.style.height = size;
+            star.style.top = Math.random() * 100 + '%';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.setProperty('--duration', Math.random() * 3 + 2 + 's');
+            starsContainer.appendChild(star);
+        }
+
+        function toggleLetter() {
+            const container = document.getElementById('mainContainer');
+            const isOpen = container.classList.contains('open');
+            
+            container.classList.toggle('open');
+
+            if (!isOpen) {
+                createHearts();
+            }
+        }
+
+        function createHearts() {
+            const heartCount = window.innerWidth < 600 ? 25 : 40;
+            for (let i = 0; i < heartCount; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.className = 'heart-particle';
+                    heart.innerHTML = '❤';
+                    heart.style.left = Math.random() * 100 + 'vw';
+                    heart.style.top = '-20px';
+                    heart.style.opacity = Math.random();
+                    heart.style.fontSize = Math.random() * 15 + 10 + 'px';
+                    heart.style.animationDuration = Math.random() * 3 + 2 + 's';
+                    document.body.appendChild(heart);
+                    
+                    setTimeout(() => heart.remove(), 5000);
+                }, i * 80);
+            }
+        }
+    </script>
+
+</body>
+</html>
